@@ -28,15 +28,12 @@ void Print(const T& firstArg, const Types& ...args) {
 int main() {
     std::cout << "*************************可变参数******************************" << std::endl;
     Print<int, char, bool>(10, 'c', true);
-
-
     std::cout << "*************************Stack******************************" << std::endl;
     Stack<int,3>  iStack;
     iStack.setEmpty();
     for(int i=0; i< 3; i++) {
         iStack.push(i);
     }
-
     while (1) {
         if (!iStack.empty()) {
             cout<< iStack.pop()<< endl;
@@ -44,8 +41,7 @@ int main() {
             break;
         }
     }
-
-    std::cout << "*************************Map******************************" << std::endl;
+    std::cout << "*************************Map*******************************" << std::endl;
     /*map 读写*/
     map<string ,string> mp;
     //pair<const char*,const char*>插入
@@ -80,6 +76,6 @@ int main() {
     std::thread::id master_thread = std::this_thread::get_id();
     std::cout << "master_thread: " << master_thread << endl;
     recv_thread.join(); // 阻塞recv_thread线程
-    recv_thread.join();
+    read_thread.join();
     return 0;
 }
