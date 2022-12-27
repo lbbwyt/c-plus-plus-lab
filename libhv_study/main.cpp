@@ -1,9 +1,15 @@
 #include "HttpServer.h"
+#include <iostream>
 using namespace hv;
-
+using namespace std;
 
 
 int main() {
+
+
+
+
+    cout<<"http"<<endl;
     HttpService router;
     router.GET("/ping", [](HttpRequest* req, HttpResponse* resp) {
         return resp->String("pong");
