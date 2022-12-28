@@ -4,6 +4,8 @@ project(libhv_study)
 set(CMAKE_CXX_STANDARD 17)
 set(googleTestDir ./external/googletest)
 
+#set(Protobuf_INCLUDE_DIRS, /usr/local/protobuf)
+
 # 编译子文件夹的CMakeLists.txt
 add_subdirectory(
         ${googleTestDir}
@@ -15,14 +17,19 @@ add_subdirectory(
 # 注意，库文件名称通常为libxxx.so，在这里只要写xxx即可
 #add_library(库文件名称 STATIC 文件)
 
-
-
 #添加头文件搜索路径
 include_directories(
         /usr/local/include/hv
+        /usr
         ./include
         ${googleTestDir}/googletest/include
 )
+
+
+#protobuf
+find_package(Protobuf REQUIRED)
+include_directories(${PROTOBUF_INCLUDE_DIRS})
+
 
 set(TEST_SOURCE_FILE
         external/googletest
@@ -51,11 +58,11 @@ target_link_libraries(http_client  -lhv)
 
 
 
-add_executable(tcp_server  tcp_server/main.cpp)
+add_executable(tcp_server  tcp_server/main.cpp protorpc/generated/calc.pb.cc)
 target_link_libraries(tcp_server  -lhv)
 
 
-add_executable(tcp_client  tcp_client/main.cpp)
+add_executable(tcp_client  tcp_client/main.cpp protorpc/generated/calc.pb.cc)
 target_link_libraries(tcp_client  -lhv)
 
 
@@ -70,6 +77,15 @@ target_link_libraries(EventLoopThreadPool  -lhv)
 
 add_executable(TimerThread   TimerThread/main.cpp)
 target_link_libraries(TimerThread  -lhv)
+
+
+
+add_executable(Protoc_Server protorpc/rpc_server/protorpc_server.cpp protorpc/generated/base.pb.cc protorpc/generated/login.pb.cc protorpc/generated/calc.pb.cc protorpc/protorpc.cpp)
+target_link_libraries(Protoc_Server  -lhv ${Protobuf_LIBRARIES})
+
+
+add_executable(Protoc_Client protorpc/rpc_client/protorpc_client.cpp protorpc/generated/base.pb.cc protorpc/generated/login.pb.cc protorpc/generated/calc.pb.cc protorpc/protorpc.cpp)
+target_link_libraries(Protoc_Client  -lhv ${Protobuf_LIBRARIES})
 
 
 
