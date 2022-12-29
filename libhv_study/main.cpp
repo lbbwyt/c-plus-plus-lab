@@ -6,9 +6,6 @@ using namespace std;
 
 int main() {
 
-
-
-
     cout<<"http"<<endl;
     HttpService router;
     router.GET("/ping", [](HttpRequest* req, HttpResponse* resp) {
@@ -41,6 +38,5 @@ int main() {
     server.setPort(8081);
     server.setThreadNum(4);
     server.run();
-
     return 0;
 }

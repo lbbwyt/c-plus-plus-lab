@@ -51,7 +51,7 @@ public:
         protorpc_unpack_setting.package_max_length = DEFAULT_PACKAGE_MAX_LENGTH;
         protorpc_unpack_setting.body_offset = PROTORPC_HEAD_LENGTH;
         protorpc_unpack_setting.length_field_offset = PROTORPC_HEAD_LENGTH_FIELD_OFFSET;
-        protorpc_unpack_setting.length_field_bytes = PROTORPC_HEAD_LENGTH_FIELD_BYTES;
+        protorpc_unpack_setting.length_field_bytes = PROTORPC_HEAD_LENGTH_FIELD_BYTES;  // int占4字节
         protorpc_unpack_setting.length_field_coding = ENCODE_BY_BIG_ENDIAN;
         setUnpack(&protorpc_unpack_setting);
     }
@@ -100,13 +100,21 @@ private:
 
         // Response::SerializeToArray + protorpc_pack
         protorpc_message_init(&msg);
-        msg.head.length = res.ByteSize();
+        msg.head.length = res.ByteSizeLong();
         packlen = protorpc_package_length(&msg.head);
         unsigned char* writebuf = NULL;
         HV_STACK_ALLOC(writebuf, packlen);
         packlen = protorpc_pack(&msg, writebuf, packlen);
         if (packlen > 0) {
             printf("< %s\n", res.DebugString().c_str());
+
+             //writebuf 为char * , 即指针，  writebuf + PROTORPC_HEAD_LENGTH， 指针和整数的加减运算，
+            //            比如指针 + 1，并不是在指针地址的基础之上加 1 个地址，而是在这个指针地址的 基础上加 1 个元素占用的字节数：
+            //             如果指针的类型是 char*，那么这个时候 1 代表 1 个字节地址；
+            //             如果指针的类型是 int*，那么这个时候 1 代表 4 个字节地址；
+            //             如果指针的类型是 float*，那么这个时候 1 代表 4 个字节地址；
+            //             如果指针的类型是 double*，那么这个时候 1 代表 8 个字节地址。
+
             res.SerializeToArray(writebuf + PROTORPC_HEAD_LENGTH, msg.head.length);
             channel->write(writebuf, packlen);
         }
@@ -115,11 +123,12 @@ private:
 };
 
 int main(int argc, char** argv) {
-    if (argc < 2) {
-        printf("Usage: %s port\n", argv[0]);
-        return -10;
-    }
-    int port = atoi(argv[1]);
+//    if (argc < 2) {
+//        printf("Usage: %s port\n", argv[0]);
+//        return -10;
+//    }
+//    int port = atoi(argv[1]);
+    int port = 9999;
 
     ProtoRpcServer srv;
     int listenfd = srv.listen(port);
