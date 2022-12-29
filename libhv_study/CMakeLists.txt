@@ -101,6 +101,8 @@ add_executable(grpc_server grpc/grpc_server/main.cpp grpc/generated/helloworld.g
 target_link_libraries(grpc_server ${PROTOBUF_LIBRARIES}  gRPC::grpc++)
 
 
+add_executable(grpc_client grpc/grpc_client/main.cpp grpc/generated/helloworld.grpc.pb.cc  grpc/generated/helloworld.grpc.pb.h  grpc/generated/helloworld.pb.cc grpc/generated/helloworld.pb.h)
+target_link_libraries(grpc_client ${PROTOBUF_LIBRARIES}  gRPC::grpc++)
 
 
 

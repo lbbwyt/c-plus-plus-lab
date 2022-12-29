@@ -7,7 +7,6 @@
 
 #include <grpcpp/grpcpp.h>
 #include "../generated/helloworld.grpc.pb.h"
-#include "../generated/helloworld.pb.h"
 
 using grpc::Channel;
 using grpc::ClientContext;
